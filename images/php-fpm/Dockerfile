@@ -7,6 +7,8 @@ COPY config/php.ini /usr/local/etc/php/
 RUN echo "php_flag[display_errors] = On">>/usr/local/etc/php-fpm.conf
 RUN echo "php_admin_flag[log_errors] = On">>/usr/local/etc/php-fpm.conf
 RUN echo "php_admin_value[display_errors] = 'stderr'">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[session.save_handler] = redis">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[session.save_path] = 'tcp://redis:6379/'">>/usr/local/etc/php-fpm.conf
 
 # Setting SAST Time
 RUN rm /etc/localtime
@@ -21,18 +23,15 @@ libmcrypt-dev \
 libpng12-dev \
 imagemagick \
 php-pear \
-php5-redis \
-php5-xcache \
 php5-mysql \
 php5-curl \
 php5-mcrypt \
 php5-imagick \
-&& docker-php-ext-install mysql \
-&& docker-php-ext-install mysqli \
-&& docker-php-ext-install iconv \
-&& docker-php-ext-install exif \
-&& docker-php-ext-install pdo \
-&& docker-php-ext-install pdo_mysql \
+&& curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
+&& tar xfz /tmp/redis.tar.gz \
+&& rm -r /tmp/redis.tar.gz \
+&& mv phpredis-2.2.7 /usr/src/php/ext/redis \
+&& docker-php-ext-install redis mysql mysqli iconv exif pdo pdo_mysql opcache \
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 && docker-php-ext-install gd
 
