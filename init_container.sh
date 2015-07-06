@@ -20,6 +20,13 @@ docker run \
 --name mysql \
 mariadb
 
+echo "CREATING CONTAINER RabbitMQ"
+docker run \
+-d \
+-e RABBITMQ_NODENAME=rabbitmq \
+--name rabbitmq \
+rabbitmq:3
+
 
 echo "CREATING CONTAINER (Redis)"
 docker run \
@@ -35,11 +42,15 @@ docker run \
 -d \
 -p 9000:9000 \
 -i \
+-t \
 --name php-fpm \
 -v $(pwd)/src/public:/usr/share/nginx/html \
+--link rabbitmq:rabbitmq \
+-w /usr/share/nginx/html \
 --link redis:redis \
 --link mysql:mysql \
-drpain/php-custom
+drpain/php-custom \
+/bin/bash -c "./composer.phar update && php-fpm"
 
 
 echo "CREATING CONTAINER (NGINX)"
