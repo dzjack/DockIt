@@ -1,6 +1,3 @@
 #!/bin/sh
 echo "Starting Development ENV"
-docker start redis
-docker start mysql
-docker start php-fpm
-docker start nginx
+docker start redis mysql rabbitmq gopull php-fpm nginx

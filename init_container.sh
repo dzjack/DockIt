@@ -36,6 +36,17 @@ docker run \
 --name redis \
 redis
 
+echo "CREATING CONTAINER GOLANG (Gopull)"
+docker run \
+-d \
+-i \
+-t \
+-v $(pwd)/src/public:/usr/share/nginx/html \
+--link rabbitmq:rabbitmq \
+-w /usr/share/nginx/html/gopull \
+--name gopull \
+golang \
+/bin/bash -c "apt-get update&& apt-get install -y imagemagick && go get github.com/streadway/amqp && go run start.go -uri=\"amqp://guest:guest@rabbitmq:5672/\""
 
 echo "CREATING CONTAINER (PHP)"
 docker run \
@@ -51,7 +62,6 @@ docker run \
 --link mysql:mysql \
 drpain/php-custom \
 /bin/bash -c "./composer.phar update && php-fpm"
-
 
 echo "CREATING CONTAINER (NGINX)"
 echo "Vhosts directory: $(pwd)/images/nginx/vhosts"
