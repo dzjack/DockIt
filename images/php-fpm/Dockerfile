@@ -3,6 +3,9 @@ FROM php:5.6-fpm
 # Copy the dev php.ini
 COPY config/php.ini /usr/local/etc/php/
 
+# Copy custom scripts in
+COPY bin/docker-php-pecl-install /usr/local/bin/
+
 # Enable Reporting
 RUN echo "php_flag[display_errors] = On">>/usr/local/etc/php-fpm.conf
 RUN echo "php_admin_flag[log_errors] = On">>/usr/local/etc/php-fpm.conf
@@ -29,7 +32,8 @@ php5-imagick \
 && mv phpredis-2.2.7 /usr/src/php/ext/redis \
 && docker-php-ext-install redis mysql mysqli iconv exif pdo pdo_mysql opcache bcmath mbstring zip \
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-&& docker-php-ext-install gd
+&& docker-php-ext-install gd \
+&& docker-php-pecl-install xdebug-2.3.3
 
 # Use composer to install dependencies
 RUN mkdir -p /usr/share/nginx/html
