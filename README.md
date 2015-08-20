@@ -26,7 +26,7 @@ cd ../../
 ./init_container.sh
 ```
 
-#### Starting Docker 
+#### Starting Docker
 ```
 ./start.sh
 ```
@@ -34,4 +34,38 @@ cd ../../
 #### Stopping Docker
 ```
 ./stop.sh
+```
+
+#### HOW To import a MySQL DB
+
+After starting the server with ./start.sh you will have an empty database.
+To import a Database you will need to have at least the mysql client installed.
+
+A bit of googling will sort you out.
+
+```shell
+# For Ubuntu this is
+sudo apt-get install mysql-client
+```
+
+Once you have the client installed and the mysql running you can import it with the following command.
+Let's use a example sql file of database.sql
+
+```shell
+mysql -h 127.0.0.1 -u root -proot < database.sql
+```
+
+#### HOW To connect to the Redis Server
+
+You can also install the Redis Server tools, and connect to it for anything. Like Monitor.
+
+```shell
+# Ubuntu Example
+sudo apt-get install redis-tools
+```
+
+Connecting to and monitoring redis.
+
+```shell
+redis-cli MONITOR
 ```
