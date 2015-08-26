@@ -1,15 +1,4 @@
 #!/bin/bash
-#
-# echo "CREATING CONTAINER (PHP)"
-# docker run \
-# -d \
-# -p 9000:9000 \
-# -i \
-# -t \
-# --name php-fpm \
-# -v $(pwd)/src/public:/usr/share/nginx/html \
-# drpain/php-custom \
-# /bin/bash
 
 echo "CREATING CONTAINER MySQL (Mariabd)"
 docker run \
