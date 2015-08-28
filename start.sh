@@ -4,6 +4,9 @@ echo "Deleting Nginx Docker, discarding old logs"
 docker rm nginx
 cd ~/DockIt
 
+echo "Starting Dockers, in order of inclusion"
+docker start redis mysql rabbitmq gopull php-fpm
+
 echo "CREATING CONTAINER (NGINX)"
 echo "Vhosts directory: $(pwd)/images/nginx/vhosts"
 docker run \
@@ -17,6 +20,3 @@ docker run \
 --volumes-from php-fpm \
 --link php-fpm:php-fpm \
 nginx
-
-echo "Starting Dockers, in order of inclusion"
-docker start redis mysql rabbitmq gopull php-fpm nginx
