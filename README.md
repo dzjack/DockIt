@@ -41,11 +41,6 @@ cd ../../
 ./php-cli.sh script.php
 ```
 
-#### Running a PHP script in CLI mode (Requiring MySQL DB access)
-```shell
-./php-cli-mysql.sh script.php
-```
-
 #### HOW To import a MySQL DB
 
 After starting the server with ./start.sh you will have an empty database.
