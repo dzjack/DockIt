@@ -4,7 +4,7 @@
 This helps me get my Development environment up and running in a matter of minutes. <3 Docker. It is really helping me get everything setup, and easily repeatable.
 
 #### Get all the base images we will be extending
-```
+```shell
 # Pull all the required images to extend from
 docker pull debian:jessie
 docker pull nginx
@@ -14,26 +14,36 @@ docker pull mariadb
 ```
 
 #### Custom PHP image
-```
+```shell
 # Create custom PHP image
 cd images/php-fpm/
 docker build -t drpain/php-custom .
 ```
 #### Create the containers in the order of dependencies
-```
+```shell
 # Create the containers in the order of dependencies
 cd ../../
 ./init_container.sh
 ```
 
 #### Starting Docker
-```
+```shell
 ./start.sh
 ```
 
 #### Stopping Docker
-```
+```shell
 ./stop.sh
+```
+
+#### Running a PHP script in CLI mode
+```shell
+./php-cli.sh script.php
+```
+
+#### Running a PHP script in CLI mode (Requiring MySQL DB access)
+```shell
+./php-cli-mysql.sh script.php
 ```
 
 #### HOW To import a MySQL DB
