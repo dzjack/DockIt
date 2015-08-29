@@ -41,6 +41,11 @@ cd ../../
 ./php-cli.sh script.php
 ```
 
+#### Running a PHP script in CLI mode. With MySQL and Redis dependencies.
+```shell
+./php-cli-mysql.sh path-to/script.php
+```
+
 #### HOW To import a MySQL DB
 
 After starting the server with ./start.sh you will have an empty database.
