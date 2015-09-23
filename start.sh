@@ -5,7 +5,7 @@ docker rm nginx
 cd ~/DockIt
 
 echo "Starting Dockers, in order of inclusion"
-docker start redis mysql rabbitmq gopull php-fpm graphite
+docker start redis mysql rabbitmq gopull graphite php-fpm
 
 echo "CREATING CONTAINER (NGINX)"
 echo "Vhosts directory: $(pwd)/images/nginx/vhosts"
