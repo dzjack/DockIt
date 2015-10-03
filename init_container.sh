@@ -8,6 +8,8 @@ docker run \
 -i \
 --name mysql \
 mariadb
+echo
+echo
 
 
 echo "CREATING CONTAINER RabbitMQ"
@@ -16,6 +18,8 @@ docker run \
 -e RABBITMQ_NODENAME=rabbitmq \
 --name rabbitmq \
 rabbitmq:3
+echo
+echo
 
 
 echo "CREATING CONTAINER (Redis)"
@@ -25,30 +29,32 @@ docker run \
 -i \
 --name redis \
 redis
+echo
+echo
+
+
+echo "CREATING CONTAINER (ElasticSearch)"
+docker run \
+-d \
+-p 9200:9200 \
+--name elasticsearch \
+elasticsearch -Des.node.name="DevNode" \
+elasticsearch
+echo
+echo
 
 
 echo "CREATING CONTAINER (Graphite)"
-echo "Cloning Into Graphite"
-rm -rf docker-graphite-statsd
-git clone https://github.com/hopsoft/docker-graphite-statsd.git
-echo "Updating PORTS"
-sed -i "s/EXPOSE 80:80/EXPOSE 8888:80/" docker-graphite-statsd/Dockerfile
-echo "Setting SAST Time"
-sed -i '3i\RUN "date"\' docker-graphite-statsd/Dockerfile
-sed -i '3i\RUN ln -s /usr/share/zoneinfo/Africa/Johannesburg /etc/localtime' docker-graphite-statsd/Dockerfile
-sed -i '3i\RUN rm /etc/localtime\' docker-graphite-statsd/Dockerfile
-sed -i '3i\# Setting Timezone to SAST\' docker-graphite-statsd/Dockerfile
-sed -i '3i\ \' docker-graphite-statsd/Dockerfile
-echo "Building Graphite Image"
-sudo docker build -t hopsoft/graphite-statsd ./docker-graphite-statsd
-docker run \
--d \
---name graphite \
---restart=always \
--p 8888:80 \
--p 2003:2003 \
--p 8125:8125/udp \
-hopsoft/graphite-statsd
+echo "It will erase and rebuild the current image "
+read -p "Do you want to do this? [y/n]: " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Initializing Graphite"
+    ./init_graphite.sh
+fi
+echo
+echo
 
 
 echo "CREATING CONTAINER GOLANG (Gopull)"
@@ -62,6 +68,8 @@ docker run \
 --name gopull \
 golang \
 /bin/bash -c "apt-get update&& apt-get install -y imagemagick && go get github.com/streadway/amqp && go run start.go -uri=\"amqp://guest:guest@rabbitmq:5672/\""
+echo
+echo
 
 
 echo "CREATING CONTAINER (PHP)"
@@ -77,8 +85,11 @@ docker run \
 --link redis:redis \
 --link mysql:mysql \
 --link graphite:graphite \
+--link elasticsearch:elasticsearch \
 drpain/php-custom \
 /bin/bash -c "./composer.phar update && php-fpm"
+echo
+echo
 
 
 echo "CREATING CONTAINER (NGINX)"

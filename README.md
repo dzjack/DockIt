@@ -11,6 +11,7 @@ docker pull nginx
 docker pull php:5.6-fpm
 docker pull redis
 docker pull mariadb
+docker pull elasticsearch
 ```
 
 #### Custom PHP image
