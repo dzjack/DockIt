@@ -40,4 +40,7 @@ RUN mkdir -p /usr/share/nginx/html
 WORKDIR "/usr/share/nginx/html"
 RUN curl -sS https://getcomposer.org/installer|php
 
+# Install Git for Composer
+RUN apt-get install -y git
+
 CMD ["php-fpm"]
