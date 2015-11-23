@@ -31,4 +31,8 @@ php5-imagick \
 # Use composer to install dependencies
 RUN curl -sS https://getcomposer.org/installer|php
 
+# Add sockets, and Expose the ports
+EXPOSE 5000
+RUN docker-php-ext-install sockets
+
 CMD ["php", "-a"]

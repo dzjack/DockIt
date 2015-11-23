@@ -43,4 +43,8 @@ RUN curl -sS https://getcomposer.org/installer|php
 # Install Git for Composer
 RUN apt-get install -y git
 
+# Add sockets, and Expose the ports
+EXPOSE 5000
+RUN docker-php-ext-install sockets
+
 CMD ["php-fpm"]
