@@ -43,20 +43,6 @@ elasticsearch
 echo
 echo
 
-
-echo "CREATING CONTAINER (Graphite)"
-echo "It will erase and rebuild the current image "
-read -p "Do you want to do this? [y/n]: " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]
-then
-    echo "Initializing Graphite"
-    ./init_graphite.sh
-fi
-echo
-echo
-
-
 echo "CREATING CONTAINER GOLANG (Gopull)"
 docker run \
 -d \
@@ -84,12 +70,13 @@ docker run \
 --link rabbitmq:rabbitmq \
 --link redis:redis \
 --link mysql:mysql \
---link graphite:graphite \
 --link elasticsearch:elasticsearch \
 drpain/php-custom \
 /bin/bash -c "./composer.phar update && php-fpm"
 echo
 echo
+# /bin/bash
+#/bin/bash -c "./composer.phar update && php-fpm"
 
 
 echo "CREATING CONTAINER (NGINX)"

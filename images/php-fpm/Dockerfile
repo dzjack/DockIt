@@ -1,4 +1,4 @@
-FROM php:5.6-fpm
+FROM php:7-fpm
 
 # Copy the dev php.ini
 COPY config/php.ini /usr/local/etc/php/
@@ -7,6 +7,8 @@ COPY config/php.ini /usr/local/etc/php/
 COPY bin/docker-php-pecl-install /usr/local/bin/
 
 # Enable Reporting
+RUN echo ";\n">>/usr/local/etc/php-fpm.conf
+RUN echo ";Enabling Error Logging\n">>/usr/local/etc/php-fpm.conf
 RUN echo "php_flag[display_errors] = On">>/usr/local/etc/php-fpm.conf
 RUN echo "php_admin_flag[log_errors] = On">>/usr/local/etc/php-fpm.conf
 RUN echo "php_admin_value[display_errors] = 'stderr'">>/usr/local/etc/php-fpm.conf
@@ -24,16 +26,17 @@ libfreetype6-dev \
 libjpeg62-turbo-dev \
 libmcrypt-dev \
 libpng12-dev \
-imagemagick \
-php5-imagick \
-&& curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
+imagemagick
+
+# Get Redis
+RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
 && tar xfz /tmp/redis.tar.gz \
 && rm -r /tmp/redis.tar.gz \
-&& mv phpredis-2.2.7 /usr/src/php/ext/redis \
-&& docker-php-ext-install redis mysql mysqli iconv exif pdo pdo_mysql opcache bcmath mbstring zip \
-&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-&& docker-php-ext-install gd \
-&& docker-php-pecl-install xdebug-2.3.3
+&& mv phpredis-2.2.7 /usr/src/php/ext/redis
+
+RUN docker-php-ext-install mysqli iconv exif pdo pdo_mysql opcache bcmath mbstring zip
+RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
+RUN docker-php-ext-install gd
 
 # Use composer to install dependencies
 RUN mkdir -p /usr/share/nginx/html
@@ -46,5 +49,8 @@ RUN apt-get install -y git
 # Add sockets, and Expose the ports
 EXPOSE 5000
 RUN docker-php-ext-install sockets
+
+RUN docker-php-pecl-install xdebug-2.4.0rc2
+EXPOSE 9000
 
 CMD ["php-fpm"]
