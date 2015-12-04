@@ -8,6 +8,5 @@ docker run -it --rm --name php-cli \
 -p 5000:5000 \
 --link redis:redis \
 --link mysql:mysql \
---link graphite:graphite \
 --link elasticsearch:elasticsearch \
 drpain/php-cli:latest php "$@"
