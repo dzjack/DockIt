@@ -1,4 +1,4 @@
-FROM php:5.6-fpm
+FROM php:7-fpm
 
 # Copy the dev php.ini
 COPY config/php.ini /usr/local/etc/php/
@@ -44,16 +44,16 @@ RUN apt-get install -y git
 EXPOSE 5000
 RUN docker-php-ext-install sockets
 
-RUN docker-php-pecl-install xdebug-2.3.3
+RUN docker-php-pecl-install xdebug-2.4.0rc2
 EXPOSE 9000
 
-# Install Redis
-RUN docker-php-pecl-install redis
+#Get Redis
+RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
+&& tar xfz /tmp/redis.tar.gz \
+&& rm -r /tmp/redis.tar.gz \
+&& mv phpredis-2.2.7 /usr/src/php/ext/redis
 
-# Get Redis
-# RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
-# && tar xfz /tmp/redis.tar.gz \
-# && rm -r /tmp/redis.tar.gz \
-# && mv phpredis-2.2.7 /usr/src/php/ext/redis
+# Install Redis
+#RUN docker-php-pecl-install redis
 
 CMD ["php-fpm"]
