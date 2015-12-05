@@ -54,6 +54,10 @@ RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.
 && mv phpredis-2.2.7 /usr/src/php/ext/redis
 
 # Install Redis
-#RUN docker-php-pecl-install redis
+RUN apt-get install -y git
+RUN git clone -b php7 https://github.com/phpredis/phpredis.git
+RUN mv phpredis /usr/src/php/ext/
+RUN ls /usr/src/php/ext
+RUN cd /usr/src/php/ext && docker-php-ext-install phpredis
 
 CMD ["php-fpm"]
