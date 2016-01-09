@@ -12,7 +12,7 @@ RUN ln -s /usr/share/zoneinfo/Africa/Johannesburg /etc/localtime
 RUN "date"
 
 # apt-update
-RUN apt-get update 
+RUN apt-get update
 
 # install libs
 RUN apt-get install -y \
@@ -41,5 +41,12 @@ RUN curl -sS https://getcomposer.org/installer|php
 # Add sockets, and Expose the ports
 EXPOSE 5000
 RUN docker-php-ext-install sockets
+
+# Install Redis
+RUN apt-get install -y git
+RUN git clone -b php7 https://github.com/phpredis/phpredis.git
+RUN mv phpredis /usr/src/php/ext/
+RUN ls /usr/src/php/ext
+RUN cd /usr/src/php/ext && docker-php-ext-install phpredis
 
 CMD ["php", "-a"]
