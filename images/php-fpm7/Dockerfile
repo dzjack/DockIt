@@ -8,10 +8,6 @@ COPY bin/docker-php-pecl-install /usr/local/bin/
 
 # Enable Reporting
 RUN echo ";\n">>/usr/local/etc/php-fpm.conf
-RUN echo ";Enabling Error Logging\n">>/usr/local/etc/php-fpm.conf
-RUN echo "php_flag[display_errors] = On">>/usr/local/etc/php-fpm.conf
-RUN echo "php_admin_flag[log_errors] = On">>/usr/local/etc/php-fpm.conf
-RUN echo "php_admin_value[display_errors] = 'stderr'">>/usr/local/etc/php-fpm.conf
 RUN echo "php_value[session.save_handler] = redis">>/usr/local/etc/php-fpm.conf
 RUN echo "php_value[session.save_path] = 'tcp://redis:6379/'">>/usr/local/etc/php-fpm.conf
 
@@ -32,6 +28,8 @@ RUN docker-php-ext-install mysqli iconv exif pdo pdo_mysql opcache bcmath mbstri
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-install gd
 
+RUN usermod -u 1000 www-data
+
 # Use composer to install dependencies
 RUN mkdir -p /usr/share/nginx/html
 WORKDIR "/usr/share/nginx/html"
@@ -40,11 +38,6 @@ RUN curl -sS https://getcomposer.org/installer|php
 # Install Git for Composer
 RUN apt-get install -y git
 
-# Add sockets, and Expose the ports
-EXPOSE 5000
-RUN docker-php-ext-install sockets
-
-RUN docker-php-pecl-install xdebug-2.4.0rc2
 EXPOSE 9000
 
 #Get Redis
