@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Ensuring that www-data owns /var/www/"
-chown -R 33:33 /var/www
+chown -R www-data:www-data /var/www
 chmod +x /var/www/composer.phar
 
 
