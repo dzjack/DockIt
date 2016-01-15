@@ -28,7 +28,7 @@ RUN docker-php-ext-install mysqli iconv exif pdo pdo_mysql opcache bcmath mbstri
 RUN docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/
 RUN docker-php-ext-install gd
 
-RUN usermod -u 1000 www-data
+RUN usermod -u 33 www-data
 
 # Use composer to install dependencies
 RUN mkdir -p /usr/share/nginx/html
