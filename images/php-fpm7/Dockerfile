@@ -44,14 +44,14 @@ RUN apt-get install -y git
 EXPOSE 5000
 RUN docker-php-ext-install sockets
 
-RUN docker-php-pecl-install xdebug-2.4.0rc2
+RUN docker-php-pecl-install xdebug-2.4.0rc3
 EXPOSE 9000
 
 #Get Redis
-RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
-&& tar xfz /tmp/redis.tar.gz \
-&& rm -r /tmp/redis.tar.gz \
-&& mv phpredis-2.2.7 /usr/src/php/ext/redis
+#RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
+#&& tar xfz /tmp/redis.tar.gz \
+#&& rm -r /tmp/redis.tar.gz \
+#&& mv phpredis-2.2.7 /usr/src/php/ext/redis
 
 # Install Redis
 RUN apt-get install -y git
@@ -59,5 +59,27 @@ RUN git clone -b php7 https://github.com/phpredis/phpredis.git
 RUN mv phpredis /usr/src/php/ext/
 RUN ls /usr/src/php/ext
 RUN cd /usr/src/php/ext && docker-php-ext-install phpredis
+
+
+RUN mkdir =p /tmp/xdebug/
+RUN chmod 777 -R /tmp/xdebug
+
+# Enable remote debugging, why thank you
+RUN echo "php_value[xdebug.remote_port] = 9999">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[xdebug.idekey] = 'PHPSTORM'">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[xdebug.remote_enable] = 1">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[xdebug.remote_autostart] = 0">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[xdebug.remote_connect_back] = 1">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[xdebug.remote_handler] = dbgp">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[xdebug.profiler_output_dir] = '/tmp/xdebug/'">>/usr/local/etc/php-fpm.conf
+RUN echo "php_value[xdebug.show_exception_trace] = 1">>/usr/local/etc/php-fpm.conf
+
+EXPOSE 9999
+
+#RUN echo "php_value[xdebug.show_local_vars] = 0">>/usr/local/etc/php-fpm.conf
+#RUN echo "php_value[xdebug.var_display_max_depth] = 20">>/usr/local/etc/php-fpm.conf
+#RUN echo "php_value[xdebug.var_display_max_data] = 10000">>/usr/local/etc/php-fpm.conf
+#RUN echo "php_value[xdebug.default_enable] = 1">>/usr/local/etc/php-fpm.conf
+#
 
 CMD ["php-fpm"]
