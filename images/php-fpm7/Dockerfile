@@ -53,4 +53,23 @@ RUN mv phpredis /usr/src/php/ext/
 RUN ls /usr/src/php/ext
 RUN cd /usr/src/php/ext && docker-php-ext-install phpredis
 
+# Install New Relic
+RUN apt-get update 
+RUN apt-get -yqq install wget
+RUN apt-get -yqq install python-setuptools
+RUN easy_install pip
+RUN mkdir -p /opt/newrelic
+WORKDIR /opt/newrelic
+RUN wget -r -nd --no-parent -Alinux.tar.gz \
+    http://download.newrelic.com/php_agent/release/ >/dev/null 2>&1 \
+    && tar -xzf newrelic-php*.tar.gz --strip=1
+COPY config/newrelic.license /opt/newrelic/
+ENV NR_INSTALL_SILENT true
+RUN export NR_INSTALL_KEY=`cat /opt/newrelic/newrelic.license` 
+RUN bash newrelic-install install
+WORKDIR /
+RUN pip install newrelic-plugin-agent
+RUN mkdir -p /var/log/newrelic
+RUN mkdir -p /var/run/newrelic
+
 CMD ["php-fpm"]
