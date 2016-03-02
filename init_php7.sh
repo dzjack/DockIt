@@ -70,12 +70,10 @@ echo
 echo "CREATING CONTAINER (NGINX)"
 echo "Vhosts directory: $(pwd)/images/nginx/vhosts"
 docker run \
--d \
---privileged=true \
+--rm \
 -p 80:80 \
 -p 443:443 \
 --name nginx \
---net=host \
 -v $(pwd)/config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
 -v $(pwd)/config/nginx/vhosts/:/etc/nginx/sites-enabled/:ro \
 --volumes-from php-fpm \
