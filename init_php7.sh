@@ -32,17 +32,6 @@ redis
 echo
 echo
 
-
-echo "CREATING CONTAINER (ElasticSearch)"
-docker run \
--d \
--p 9200:9200 \
---name elasticsearch \
-elasticsearch -Des.node.name="DevNode" \
-elasticsearch
-echo
-echo
-
 echo "CREATING CONTAINER GOLANG (Gopull)"
 docker run \
 -d \
@@ -64,13 +53,12 @@ docker run \
 -p 9000:9000 \
 -i \
 -t \
---name php7-fpm \
+--name php-fpm \
 -v $(pwd)/src/public:/usr/share/nginx/html \
 -w /usr/share/nginx/html \
 --link rabbitmq:rabbitmq \
 --link redis:redis \
 --link mysql:mysql \
---link elasticsearch:elasticsearch \
 drpain/php-custom:php7 \
 /bin/bash -c "./composer.phar update && php-fpm"
 echo
@@ -90,6 +78,6 @@ docker run \
 --net=host \
 -v $(pwd)/config/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
 -v $(pwd)/config/nginx/vhosts/:/etc/nginx/sites-enabled/:ro \
---volumes-from php7-fpm \
---link php7-fpm:php-fpm \
+--volumes-from php-fpm \
+--link php-fpm:php-fpm \
 nginx

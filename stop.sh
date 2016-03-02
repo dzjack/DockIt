@@ -1,3 +1,3 @@
 #!/bin/sh
 echo "Stopping Development ENV"
-docker stop gopull nginx php-fpm redis rabbitmq mysql elasticsearch
+docker stop gopull nginx php7-fpm redis rabbitmq mysql elasticsearch
