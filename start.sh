@@ -1,4 +1,11 @@
 #!/bin/sh
+# CHECK IF DOCKER IS INSTALLED
+command -v docker >/dev/null 2>&1 || {
+    echo "Docker not installed!!  Aborting!!" >&2;
+    echo "Installation Documentation: https://docs.docker.com/engine/installation/" >&2;
+}
+docker -v
+
 echo "Starting Development ENV - PHP7"
 echo "Deleting Nginx Docker, discarding old logs"
 docker rm nginx
@@ -19,4 +26,3 @@ docker run \
 --volumes-from php-fpm \
 --link php-fpm:php-fpm \
 nginx
-

@@ -1,2 +1,2 @@
 #!/bin/sh
-docker build -t drpain/php-custom:latest .
+docker build -t drpain/php-custom:php7 .
