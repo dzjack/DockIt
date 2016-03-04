@@ -40,46 +40,42 @@ RUN curl -sS https://getcomposer.org/installer|php
 # Install Git for Composer
 RUN apt-get install -y git
 
-# Add sockets, and Expose the ports
+# Expose ports
+# php-fpm, sockets, and x-debug
 EXPOSE 5000
-RUN docker-php-ext-install sockets
-
-RUN docker-php-pecl-install xdebug-2.4.0rc3
 EXPOSE 9000
+EXPOSE 9999
 
-#Get Redis
-#RUN curl -L -o /tmp/redis.tar.gz https://github.com/phpredis/phpredis/archive/2.2.7.tar.gz \
-#&& tar xfz /tmp/redis.tar.gz \
-#&& rm -r /tmp/redis.tar.gz \
-#&& mv phpredis-2.2.7 /usr/src/php/ext/redis
+# Sockets
+RUN docker-php-ext-install sockets
 
 # Install Redis
 RUN apt-get install -y git
 RUN git clone -b php7 https://github.com/phpredis/phpredis.git
 RUN mv phpredis /usr/src/php/ext/
-RUN ls /usr/src/php/ext
+RUN ls /usr/src/php/ext | grep -i redis
 RUN cd /usr/src/php/ext && docker-php-ext-install phpredis
 
-
-RUN mkdir =p /tmp/xdebug/
-RUN chmod 777 -R /tmp/xdebug
+# Install XDebug
+RUN curl -L --remote-name -O http://xdebug.org/files/xdebug-2.4.0.tgz
+RUN tar -xvzf xdebug-2.4.0.tgz
+RUN mv xdebug-2.4.0 /usr/src/php/ext/
+RUN cd /usr/src/php/ext/xdebug-2.4.0 && phpize && ./configure && make
+RUN cp /usr/src/php/ext/xdebug-2.4.0/modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012
+RUN echo "zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so">/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 
 # Enable remote debugging, why thank you
-RUN echo "php_value[xdebug.remote_port] = 9999">>/usr/local/etc/php-fpm.conf
-RUN echo "php_value[xdebug.idekey] = 'PHPSTORM'">>/usr/local/etc/php-fpm.conf
-RUN echo "php_value[xdebug.remote_enable] = 1">>/usr/local/etc/php-fpm.conf
-RUN echo "php_value[xdebug.remote_autostart] = 0">>/usr/local/etc/php-fpm.conf
-RUN echo "php_value[xdebug.remote_connect_back] = 1">>/usr/local/etc/php-fpm.conf
-RUN echo "php_value[xdebug.remote_handler] = dbgp">>/usr/local/etc/php-fpm.conf
-RUN echo "php_value[xdebug.profiler_output_dir] = '/tmp/xdebug/'">>/usr/local/etc/php-fpm.conf
-RUN echo "php_value[xdebug.show_exception_trace] = 1">>/usr/local/etc/php-fpm.conf
+RUN echo "xdebug.remote_port = 9999">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.idekey = 'PHPSTORM'">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.remote_enable = 1">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.remote_autostart = 0">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.remote_connect_back = 1">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.remote_handler = dbgp">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.profiler_output_dir = '/tmp/xdebug/'">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.show_exception_trace = 1">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 
-EXPOSE 9999
-
-#RUN echo "php_value[xdebug.show_local_vars] = 0">>/usr/local/etc/php-fpm.conf
-#RUN echo "php_value[xdebug.var_display_max_depth] = 20">>/usr/local/etc/php-fpm.conf
-#RUN echo "php_value[xdebug.var_display_max_data] = 10000">>/usr/local/etc/php-fpm.conf
-#RUN echo "php_value[xdebug.default_enable] = 1">>/usr/local/etc/php-fpm.conf
-#
+RUN echo "xdebug.show_local_vars = 0">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.var_display_max_depth = 20">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+RUN echo "xdebug.var_display_max_data = 10000">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 
 CMD ["php-fpm"]
