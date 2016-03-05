@@ -5,5 +5,5 @@ command -v docker >/dev/null 2>&1 || {
     echo "Installation Documentation: https://docs.docker.com/engine/installation/" >&2;
 }
 docker -v
-echo "Stopping Development ENV"
-docker stop gopull nginx php-fpm redis rabbitmq mysql
+echo "Stopping Deve lopment ENV"
+docker stop gopull nginx php-fpm redis mysql

@@ -13,14 +13,6 @@ function createContainers {
     mariadb
     echo
 
-    echo "CREATING CONTAINER RabbitMQ"
-    docker run \
-    -d \
-    -e RABBITMQ_NODENAME=rabbitmq \
-    --name rabbitmq \
-    rabbitmq:3
-    echo
-
     echo "CREATING CONTAINER (Redis)"
     docker run \
     -d \
@@ -36,11 +28,11 @@ function createContainers {
     -i \
     -t \
     -v $(pwd)/src/public:/usr/share/nginx/html \
-    --link rabbitmq:rabbitmq \
     -w /usr/share/nginx/html/gopull \
     --name gopull \
+    --link redis:redis \
     golang \
-    /bin/bash -c "apt-get update&& apt-get install -y imagemagick && go get github.com/streadway/amqp && go run start.go -uri=\"amqp://guest:guest@rabbitmq:5672/\""
+    /bin/bash -c "apt-get update && apt-get install -y imagemagick && go get menteslibres.net/gosexy/redis && bash"
     echo
 
     echo "CREATING CONTAINER (PHP)"
@@ -52,7 +44,6 @@ function createContainers {
     --name php-fpm \
     -v $(pwd)/src/public:/usr/share/nginx/html \
     -w /usr/share/nginx/html \
-    --link rabbitmq:rabbitmq \
     --link redis:redis \
     --link mysql:mysql \
     drpain/php-custom:php7 \
