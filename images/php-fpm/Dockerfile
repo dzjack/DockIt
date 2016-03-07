@@ -56,13 +56,8 @@ RUN mv phpredis /usr/src/php/ext/
 RUN ls /usr/src/php/ext | grep -i redis
 RUN cd /usr/src/php/ext && docker-php-ext-install phpredis
 
-# Install XDebug
-RUN curl -L --remote-name -O http://xdebug.org/files/xdebug-2.4.0.tgz
-RUN tar -xvzf xdebug-2.4.0.tgz
-RUN mv xdebug-2.4.0 /usr/src/php/ext/
-RUN cd /usr/src/php/ext/xdebug-2.4.0 && phpize && ./configure && make
-RUN cp /usr/src/php/ext/xdebug-2.4.0/modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012
-RUN echo "zend_extension = /usr/local/lib/php/extensions/no-debug-non-zts-20151012/xdebug.so">/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
+# Try and install PECL xdebug
+RUN docker-php-pecl-install xdebug
 
 # Enable remote debugging, why thank you
 RUN echo "xdebug.remote_port = 9999">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
@@ -73,9 +68,5 @@ RUN echo "xdebug.remote_connect_back = 1">>/usr/local/etc/php/conf.d/docker-php-
 RUN echo "xdebug.remote_handler = dbgp">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 RUN echo "xdebug.profiler_output_dir = '/tmp/xdebug/'">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 RUN echo "xdebug.show_exception_trace = 1">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
-
-RUN echo "xdebug.show_local_vars = 0">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
-RUN echo "xdebug.var_display_max_depth = 20">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
-RUN echo "xdebug.var_display_max_data = 10000">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 
 CMD ["php-fpm"]

@@ -29,8 +29,8 @@ function createContainers {
     -t \
     -v $(pwd)/src/public:/usr/share/nginx/html \
     -w /usr/share/nginx/html/gopull \
-    --name gopull \
     --link redis:redis \
+    --name gopull \
     golang \
     /bin/bash -c "apt-get update && apt-get install -y imagemagick && go get menteslibres.net/gosexy/redis && bash"
     echo
