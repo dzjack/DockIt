@@ -25,4 +25,4 @@ docker run \
 -v $(pwd)/config/nginx/vhosts/:/etc/nginx/sites-enabled/:ro \
 --volumes-from php-fpm \
 --link php-fpm:php-fpm \
-nginx
+nginx | ccze -A
