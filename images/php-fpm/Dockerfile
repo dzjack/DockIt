@@ -55,5 +55,9 @@ RUN docker-php-pecl-install redis
 # && tar xfz /tmp/redis.tar.gz \
 # && rm -r /tmp/redis.tar.gz \
 # && mv phpredis-2.2.7 /usr/src/php/ext/redis
+#
+#
+# Install mcrypt
+RUN docker-php-ext-install mcrypt
 
 CMD ["php-fpm"]
