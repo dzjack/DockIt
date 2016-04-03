@@ -69,4 +69,7 @@ RUN echo "xdebug.remote_handler = dbgp">>/usr/local/etc/php/conf.d/docker-php-pe
 RUN echo "xdebug.profiler_output_dir = '/tmp/xdebug/'">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 RUN echo "xdebug.show_exception_trace = 1">>/usr/local/etc/php/conf.d/docker-php-pecl-xdebug.ini
 
+# Install mcrypt
+RUN docker-php-ext-install mcrypt
+
 CMD ["php-fpm"]
